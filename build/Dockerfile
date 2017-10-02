@@ -1,10 +1,10 @@
 FROM alpine:latest
-MAINTAINER Jason Rivers <docker@jasonrivers.co.uk>
+MAINTAINER Balogh Tamás <balogh.tamas@autsoft.hu>
 
-ENV NGINX_VERSION 1.9.15
+ENV NGINX_VERSION 1.13.5
 
 RUN	apk update		&&	\
-	apk add				\
+	  apk add				\
 		git			\
 		gcc			\
 		binutils-libs		\
@@ -19,6 +19,7 @@ RUN	apk update		&&	\
 		pkgconfig		\
 		mpfr3			\
 		mpc1			\
+		curl      \
 		libstdc++		\
 		ca-certificates		\
 		libssh2			\
@@ -34,33 +35,19 @@ RUN	apk update		&&	\
 
 
 RUN	cd /tmp/									&&	\
-	wget http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz			&&	\
+	curl -L -O http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz			&&	\
 	git clone https://github.com/arut/nginx-rtmp-module.git
 
-RUN	cd /tmp										&&	\
-	tar xzf nginx-${NGINX_VERSION}.tar.gz						&&	\
-	cd nginx-${NGINX_VERSION}							&&	\
-	./configure										\
-		--prefix=/opt/nginx								\
-		--with-http_ssl_module								\
-		--add-module=../nginx-rtmp-module					&&	\
-	make										&&	\
+RUN	cd /tmp &&	\
+	tar xzf nginx-${NGINX_VERSION}.tar.gz &&	\
+	cd nginx-${NGINX_VERSION} &&	\
+	./configure \
+		--prefix=/opt/nginx \
+		--with-http_ssl_module \
+		--add-module=../nginx-rtmp-module &&	\
+	make &&	\
 	make install
 
-RUN	echo "rtmp {" >> /opt/nginx/conf/nginx.conf					&&	\
-	echo "	server {" >> /opt/nginx/conf/nginx.conf					&&	\
-	echo "		listen 1935;" >> /opt/nginx/conf/nginx.conf			&&	\
-	echo "		chunk_size 4096;" >> /opt/nginx/conf/nginx.conf			&&	\
-	echo "		application live {" >> /opt/nginx/conf/nginx.conf		&&	\
-	echo "			live on;" >> /opt/nginx/conf/nginx.conf			&&	\
-	echo "			record off;" >> /opt/nginx/conf/nginx.conf		&&	\
-	echo "		}" >> /opt/nginx/conf/nginx.conf				&&	\
-	echo "		application testing {" >> /opt/nginx/conf/nginx.conf		&&	\
-	echo "			live on;" >> /opt/nginx/conf/nginx.conf			&&	\
-	echo "			record off;" >> /opt/nginx/conf/nginx.conf		&&	\
-	echo "		}" >> /opt/nginx/conf/nginx.conf				&&	\
-	echo "	}" >> /opt/nginx/conf/nginx.conf					&&	\
-	echo "}" >> /opt/nginx/conf/nginx.conf
 
 RUN	cd /opt/ 	&&	\
 	tar cvzf /tmp/nginx.tar.gz nginx
@@ -68,4 +55,3 @@ RUN	cd /opt/ 	&&	\
 EXPOSE 1935
 
 CMD ["/opt/nginx/sbin/nginx", "-g", "daemon off;"]
-
