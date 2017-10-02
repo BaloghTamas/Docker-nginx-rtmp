@@ -1,4 +1,4 @@
-# Docker container for **nginx-rtmp**
+# Docker container for **nginx-rtmp** [![Build Status](https://travis-ci.org/BaloghTamas/Docker-nginx-rtmp.svg?branch=master)](https://travis-ci.org/BaloghTamas/Docker-nginx-rtmp)
 Docker image for an **RTMP/HLS** server running on nginx, fork of **JasonRivers/Docker-nginx-rtmp**, using **sergey-dryabzhinsky/nginx-rtmp-module**.
 
 NGINX Version **1.13.5**
