@@ -1,13 +1,20 @@
 sudo:
   - required
+
 language:
   - bash
+
 services:
   - docker
 
-install:
-  - git clone https://github.com/JasonRivers/Docker-nginx-rtmp.git ~/Docker-nginx-rtmp
+before_install:
+  - git clone https://github.com/BaloghTamas/Docker-nginx-rtmp.git ~/Docker-nginx-rtmp
 
 script:
   - ./build.sh
 
+after_success:
+  - if [ "$TRAVIS_BRANCH" == "master" ]; then
+    docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
+    docker push USER/REPO;
+    fi

@@ -1,8 +1,8 @@
 FROM alpine:latest
-MAINTAINER Jason Rivers <docker@jasonrivers.co.uk>
+MAINTAINER Balogh Tamás <balogh.tamas@autsoft.hu>
 
 RUN	apk update		&&	\
-	apk add				\
+	  apk add				\
 		openssl			\
 		libstdc++		\
 		ca-certificates		\
@@ -14,5 +14,6 @@ ADD	nginx.conf /opt/nginx/conf/nginx.conf
 
 EXPOSE 1935
 EXPOSE 8080
+EXPOSE 443
 
 CMD ["/opt/nginx/sbin/nginx", "-g", "daemon off;"]
